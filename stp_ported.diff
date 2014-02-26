@@ -1,0 +1,715 @@
+diff -rNu NG-libnet-orig/include/libnet/libnet-functions.h NG-libnet/include/libnet/libnet-functions.h
+--- NG-libnet-orig/include/libnet/libnet-functions.h	2004-08-16 18:18:23.000000000 +0200
++++ NG-libnet/include/libnet/libnet-functions.h	2004-08-17 15:30:50.000000000 +0200
+@@ -1489,6 +1489,171 @@
+ 			  libnet_t *l, libnet_ptag_t ptag);
+ 
+ 
++/*********************************************************************
++ * Spanning Tree Functions
++ *********************************************************************/
++
++/**
++ * Builds an IEEE 802.1d Spanning Tree Protocol (STP) configuration header.
++ * STP frames are usually encapsulated inside of an 802.2 + 802.3 frame
++ * combination.
++ * @param id protocol id
++ * @param version protocol version
++ * @param bpdu_type bridge protocol data unit type
++ * @param flags flags
++ * @param root_id root id
++ * @param root_pc root path cost
++ * @param bridge_id bridge id
++ * @param port_id port id
++ * @param message_age message age
++ * @param max_age max age
++ * @param hello_time hello time
++ * @param f_delay forward delay
++ * @param payload optional payload or NULL
++ * @param payload_s payload length or 0
++ * @param l pointer to a libnet context
++ * @param pkt pointer to the packet where the header will be put
++ * @param ptag protocol tag to modify an existing header, 0 to build a new one
++ * @return protocol tag value on success, -1 on error
++ */
++libnet_ptag_t
++libnet_build_stp_pbuf_conf(u_int16_t id, u_int8_t version, u_int8_t bpdu_type,
++u_int8_t flags, u_int8_t *root_id, u_int32_t root_pc, u_int8_t *bridge_id,
++u_int16_t port_id, u_int16_t message_age, u_int16_t max_age,
++u_int16_t hello_time, u_int16_t f_delay, u_int8_t *payload,
++u_int32_t payload_s, libnet_t *l, packet_t *pkt, libnet_ptag_t ptag);
++
++
++/**
++ * Wrapper for the function libnet_build_pbuf_stp_conf()
++ * Look at it for details.
++ */
++libnet_ptag_t
++libnet_build_stp_conf(u_int16_t id, u_int8_t version, u_int8_t bpdu_type,
++u_int8_t flags, u_int8_t *root_id, u_int32_t root_pc, u_int8_t *bridge_id,
++u_int16_t port_id, u_int16_t message_age, u_int16_t max_age,
++u_int16_t hello_time, u_int16_t f_delay, u_int8_t *payload,
++u_int32_t payload_s, libnet_t *l, libnet_ptag_t ptag);
++
++
++/**
++ * Builds an IEEE 802.1d Spanning Tree Protocol (STP) topology change
++ * notification header. STP frames are usually encapsulated inside of an
++ * 802.2 + 802.3 frame combination.
++ * @param id protocol id
++ * @param version protocol version
++ * @param bpdu_type bridge protocol data unit type
++ * @param payload optional payload or NULL
++ * @param payload_s payload length or 0
++ * @param l pointer to a libnet context
++ * @param pkt pointer to the packet where the header will be put
++ * @param ptag protocol tag to modify an existing header, 0 to build a new one
++ * @return protocol tag value on success, -1 on error
++ */
++libnet_ptag_t
++libnet_build_pbuf_stp_tcn(u_int16_t id, u_int8_t version, u_int8_t bpdu_type,
++u_int8_t *payload, u_int32_t payload_s, libnet_t *l, packet_t *pkt, libnet_ptag_t ptag);
++
++
++/**
++ * Wrapper for the function libnet_build_pbuf_stp_tcn()
++ * Look at it for details.
++ */
++libnet_ptag_t
++libnet_build_stp_tcn(u_int16_t id, u_int8_t version, u_int8_t bpdu_type,
++u_int8_t *payload, u_int32_t payload_s, libnet_t *l, libnet_ptag_t ptag);
++
++
++/*********************************************************************
++ * 802.2 Functions
++ *********************************************************************/
++
++/**
++ * Builds an IEEE 802.2 LLC header.
++ * @param dsap destination service access point
++ * @param ssap source service access point
++ * @param control control field
++ * @param payload optional payload or NULL
++ * @param payload_s payload length or 0
++ * @param l pointer to a libnet context
++ * @param pkt pointer to the packet where the header will be put
++ * @param ptag protocol tag to modify an existing header, 0 to build a new one
++ * @return protocol tag value on success, -1 on error
++ */
++libnet_ptag_t
++libnet_build_pbuf_802_2(u_int8_t dsap, u_int8_t ssap, u_int8_t control,
++        u_int8_t *payload, u_int32_t payload_s, libnet_t *l, packet_t *pkt,
++        libnet_ptag_t ptag);
++
++/**
++ * Wrapper for the function libnet_build_pbuf_802_2()
++ * Look at it for details.
++ */
++libnet_ptag_t
++libnet_build_802_2(u_int8_t dsap, u_int8_t ssap, u_int8_t control,
++        u_int8_t *payload, u_int32_t payload_s, libnet_t *l, libnet_ptag_t ptag);
++
++/**
++ * Builds an IEEE 802.2 LLC SNAP header.
++ * @param dsap destination service access point
++ * @param ssap source service access point
++ * @param control control field
++ * @param oui Organizationally Unique Identifier
++ * @param type upper layer protocol
++ * @param payload optional payload or NULL
++ * @param payload_s payload length or 0
++ * @param l pointer to a libnet context
++ * @param pkt pointer to the packet where the header will be put
++ * @param ptag protocol tag to modify an existing header, 0 to build a new one
++ * @return protocol tag value on success, -1 on error
++ */
++libnet_ptag_t
++libnet_build_pbuf_802_2snap(u_int8_t dsap, u_int8_t ssap, u_int8_t control,
++        u_int8_t *oui, u_int16_t type, u_int8_t *payload, u_int32_t payload_s,
++        libnet_t *l, packet_t *pkt, libnet_ptag_t ptag);
++
++/**
++ * Wrapper for the function libnet_build_pbuf_802_2snap()
++ * Look at it for details.
++ */
++libnet_ptag_t
++libnet_build_802_2snap(u_int8_t dsap, u_int8_t ssap, u_int8_t control,
++        u_int8_t *oui, u_int16_t type, u_int8_t *payload, u_int32_t payload_s,
++        libnet_t *l, libnet_ptag_t ptag);
++
++
++/*********************************************************************
++ * 802.3 Functions
++ *********************************************************************/
++
++/**
++ * Builds an IEEE 802.3 header. The 802.3 header is almost identical to the
++ * RFC 894 Ethernet II header, the exception being that the field immediately
++ * following the source address holds the frame's length (as opposed to the
++ * layer 3 protocol). You should only use this function when libnet is
++ * initialized with the LIBNET_LINK interface.
++ * @param dst destination ethernet address
++ * @param src source ethernet address
++ * @param len frame length sans header
++ * @param payload optional payload or NULL
++ * @param payload_s payload length or 0
++ * @param l pointer to a libnet context
++ * @param pkt pointer to the packet where the header will be put
++ * @param ptag protocol tag to modify an existing header, 0 to build a new one
++ * @return protocol tag value on success, -1 on error
++ */
++libnet_ptag_t
++libnet_build_pbuf_802_3(u_int8_t *dst, u_int8_t *src, u_int16_t len,
++        u_int8_t *payload, u_int32_t payload_s, libnet_t *l, packet_t *pkt, 
++        libnet_ptag_t ptag);
++
++/**
++ * Wrapper for the function libnet_build_pbuf_802_3()
++ * Look at it for details.
++ */
++libnet_ptag_t
++libnet_build_802_3(u_int8_t *dst, u_int8_t *src, u_int16_t len,
++        u_int8_t *payload, u_int32_t payload_s, libnet_t *l, libnet_ptag_t ptag);
+ 
+ 
+ /*********************************************************************
+diff -rNu NG-libnet-orig/include/libnet/libnet-structures.h NG-libnet/include/libnet/libnet-structures.h
+--- NG-libnet-orig/include/libnet/libnet-structures.h	2004-08-16 18:42:23.000000000 +0200
++++ NG-libnet/include/libnet/libnet-structures.h	2004-08-17 13:20:17.000000000 +0200
+@@ -198,6 +198,11 @@
+ #define LIBNET_PBUF_IPV4_H            0x0d    /* IP v4 header */
+ #define LIBNET_PBUF_TCP_H             0x1e    /* TCP header */
+ #define LIBNET_PBUF_UDP_H             0x21    /* UDP header */
++#define LIBNET_PBUF_802_2_H           0x29    /* 802.2 header */
++#define LIBNET_PBUF_802_2SNAP_H       0x2a    /* 802.2 SNAP header */
++#define LIBNET_PBUF_802_3_H           0x2b    /* 802.3 header */
++#define LIBNET_PBUF_STP_CONF_H        0x2c    /* STP configuration header */
++#define LIBNET_PBUF_STP_TCN_H         0x2d    /* STP TCN header */
+ #define LIBNET_PBUF_FDDI_H            0x33    /* FDDI header */
+ #define LIBNET_PBUF_GRE_H             0x39    /* GRE header */
+ #define LIBNET_PBUF_GRE_SRE_H         0x3a    /* GRE SRE header */
+diff -rNu NG-libnet-orig/sample/Makefile.am NG-libnet/sample/Makefile.am
+--- NG-libnet-orig/sample/Makefile.am	2004-08-16 17:55:41.000000000 +0200
++++ NG-libnet/sample/Makefile.am	2004-08-17 12:49:58.000000000 +0200
+@@ -8,7 +8,7 @@
+ 
+ include $(top_srcdir)/Makefile.am.common
+ 
+-noinst_PROGRAMS = arp get_addr udp1 udp2 gai gre ip4 tcp1 tcp2
++noinst_PROGRAMS = arp get_addr udp1 udp2 gai gre ip4 tcp1 tcp2 stp
+ 
+ arp_SOURCES             = arp.c
+ cdp_SOURCES             = cdp.c
+diff -rNu NG-libnet-orig/sample/stp.c NG-libnet/sample/stp.c
+--- NG-libnet-orig/sample/stp.c	2004-08-15 10:31:20.000000000 +0200
++++ NG-libnet/sample/stp.c	2004-08-17 15:15:11.000000000 +0200
+@@ -128,10 +128,10 @@
+             0x00000001,                         /* root path cost */
+             bridgeid,                           /* bridge id */
+             0x8002,                             /* port id */
+-            0x00,                               /* message age */
+-            0x0014,                             /* max age */
+-            0x0002,                             /* hello time */
+-            0x000f,                             /* forward delay */
++            0x00*256,                           /* message age */
++            0x0014*256,                         /* max age */
++            0x0002*256,                         /* hello time */
++            0x000f*256,                         /* forward delay */
+             NULL,                               /* payload */
+             0,                                  /* payload size */
+             l,                                  /* libnet handle */
+diff -rNu NG-libnet-orig/src/libnet_build_802.2.c NG-libnet/src/libnet_build_802.2.c
+--- NG-libnet-orig/src/libnet_build_802.2.c	1970-01-01 01:00:00.000000000 +0100
++++ NG-libnet/src/libnet_build_802.2.c	2004-08-17 13:16:36.000000000 +0200
+@@ -0,0 +1,166 @@
++/*
++ *  $Id: libnet_build_802.2.c,v 1.11 2004/04/13 17:32:28 mike Exp $
++ *
++ *  libnet
++ *  libnet_build_802.2.c - 802.2 packet assembler
++ *
++ *  Copyright (c) 1998 - 2004 Mike D. Schiffman <mike@infonexus.com>
++ *  All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ *
++ */
++
++#if (HAVE_CONFIG_H)
++#include "../include/config.h"
++#endif
++#if (!(_WIN32) || (__CYGWIN__)) 
++#include "../include/libnet.h"
++#else
++#include "../include/win32/libnet.h"
++#endif
++
++libnet_ptag_t
++libnet_build_pbuf_802_2(u_int8_t dsap, u_int8_t ssap, u_int8_t control, 
++u_int8_t *payload, u_int32_t payload_s, libnet_t *l, packet_t *pkt, libnet_ptag_t ptag)
++{
++    pbuf_t *pbuf;
++    struct libnet_802_2_hdr *_802_2_hdr;
++
++    CHECK_CTX_AND_PKT(l, pkt);
++    CHECK_PKT_IN_CTX(l, pkt);
++    CHECK_NOT_RAW_MODE(l);
++ 
++    /*
++     *  Find the existing protocol block if a ptag is specified, or create
++     *  a new one.
++     */
++    FIND_PBUF(pbuf, l, pkt, LIBNET_PBUF_802_2_H, LIBNET_802_2_H + payload_s, ptag);
++
++    /*
++     * Do the real job now
++     */
++    _802_2_hdr = (struct libnet_802_2_hdr *) pbuf_head(pbuf);
++    _802_2_hdr->llc_dsap = dsap;
++    _802_2_hdr->llc_ssap = ssap;
++    _802_2_hdr->llc_control = control;
++
++   /*
++    * Inject the payload
++    */
++    APPEND_PAYLOAD(pbuf_head(pbuf) + LIBNET_802_2_H, payload, payload_s);
++
++    /*
++     * If we rebuild the pbuf, we may need to recompute checksums
++     */
++    UPDATE_PACKET(pkt, ptag);
++
++    return pbuf_ptag(pbuf);
++}
++
++libnet_ptag_t
++libnet_build_pbuf_802_2snap(u_int8_t dsap, u_int8_t ssap, u_int8_t control,
++u_int8_t *oui, u_int16_t type, u_int8_t *payload, u_int32_t payload_s,
++libnet_t *l, packet_t *pkt, libnet_ptag_t ptag)
++{
++    pbuf_t *pbuf;
++    struct libnet_802_2snap_hdr *_802_2_hdr;
++
++    CHECK_CTX_AND_PKT(l, pkt);
++    CHECK_PKT_IN_CTX(l, pkt);
++    CHECK_NOT_RAW_MODE(l);
++ 
++    /*
++     *  Find the existing protocol block if a ptag is specified, or create
++     *  a new one.
++     */
++    FIND_PBUF(pbuf, l, pkt, LIBNET_PBUF_802_2SNAP_H, LIBNET_802_2SNAP_H + payload_s, ptag);
++
++    /*
++     * Do the real job now
++     */
++    _802_2_hdr = (struct libnet_802_2snap_hdr *) pbuf_head(pbuf);
++    _802_2_hdr->snap_dsap = dsap;
++    _802_2_hdr->snap_ssap = ssap;
++    _802_2_hdr->snap_control = control;
++    memcpy(_802_2_hdr->snap_oui, oui, 3);
++    _802_2_hdr->snap_type = htons(type);
++
++   /*
++    * Inject the payload
++    */
++    APPEND_PAYLOAD(pbuf_head(pbuf) + LIBNET_802_2SNAP_H, payload, payload_s);
++
++    /*
++     * If we rebuild the pbuf, we may need to recompute checksums
++     */
++    UPDATE_PACKET(pkt, ptag);
++
++    return pbuf_ptag(pbuf);
++}
++
++
++/*
++ * Compatible version of the builder, easy to use especially for
++ * simple developments. 
++
++ * [WARNING]
++ * This function generates an error if several packets are bound to
++ * the context.
++ * 
++ */
++libnet_ptag_t
++libnet_build_802_2(u_int8_t dsap, u_int8_t ssap, u_int8_t control, 
++u_int8_t *payload, u_int32_t payload_s, libnet_t *l, libnet_ptag_t ptag)
++{
++    packet_t *pkt;
++
++    PREPARE_PACKET(l, pkt);
++    return libnet_build_pbuf_802_2(dsap, ssap, control, payload,
++            payload_s, l, pkt, ptag);
++}
++
++
++/*
++ * Compatible version of the builder, easy to use especially for
++ * simple developments. 
++
++ * [WARNING]
++ * This function generates an error if several packets are bound to
++ * the context.
++ * 
++ */
++libnet_ptag_t
++libnet_build_802_2snap(u_int8_t dsap, u_int8_t ssap, u_int8_t control,
++u_int8_t *oui, u_int16_t type, u_int8_t *payload, u_int32_t payload_s,
++libnet_t *l, libnet_ptag_t ptag)
++
++{
++    packet_t *pkt;
++
++    PREPARE_PACKET(l, pkt);
++    return libnet_build_pbuf_802_2snap(dsap, ssap, control, oui, type,
++            payload, payload_s, l, pkt, ptag);
++}
++
++
++/* EOF */
+diff -rNu NG-libnet-orig/src/libnet_build_802.3.c NG-libnet/src/libnet_build_802.3.c
+--- NG-libnet-orig/src/libnet_build_802.3.c	1970-01-01 01:00:00.000000000 +0100
++++ NG-libnet/src/libnet_build_802.3.c	2004-08-17 13:21:43.000000000 +0200
+@@ -0,0 +1,101 @@
++/*
++ *  $Id: libnet_build_802.3.c,v 1.10 2004/04/13 17:32:28 mike Exp $
++ *
++ *  libnet
++ *  libnet_build_802_3.c - 802.3 packet assembler
++ *
++ *  Copyright (c) 1998 - 2004 Mike D. Schiffman <mike@infonexus.com>
++ *  All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ *
++ */
++
++#if (HAVE_CONFIG_H)
++#include "../include/config.h"
++#endif
++#if (!(_WIN32) || (__CYGWIN__)) 
++#include "../include/libnet.h"
++#else
++#include "../include/win32/libnet.h"
++#endif
++
++libnet_ptag_t
++libnet_build_pbuf_802_3(u_int8_t *dst, u_int8_t *src, u_int16_t len, 
++u_int8_t *payload, u_int32_t payload_s, libnet_t *l, packet_t *pkt, libnet_ptag_t ptag)
++{
++    pbuf_t *pbuf;
++    struct libnet_802_3_hdr *_802_3_hdr;
++
++    CHECK_CTX_AND_PKT(l, pkt);
++    CHECK_PKT_IN_CTX(l, pkt);
++    CHECK_NOT_RAW_MODE(l);
++ 
++    /*
++     *  Find the existing protocol block if a ptag is specified, or create
++     *  a new one.
++     */
++    FIND_PBUF(pbuf, l, pkt, LIBNET_PBUF_802_3_H, LIBNET_802_3_H + payload_s, ptag);
++
++    /*
++     * Do the real job now
++     */
++    _802_3_hdr = (struct libnet_802_3_hdr *) pbuf_head(pbuf);
++    memcpy(_802_3_hdr->_802_3_dhost, dst, ETHER_ADDR_LEN);  /* dest address */
++    memcpy(_802_3_hdr->_802_3_shost, src, ETHER_ADDR_LEN);  /* src address */
++    _802_3_hdr->_802_3_len = htons(len);                    /* packet length */
++
++   /*
++    * Inject the payload
++    */
++    APPEND_PAYLOAD(pbuf_head(pbuf) + LIBNET_802_3_H, payload, payload_s);
++
++    /*
++     * If we rebuild the pbuf, we may need to recompute checksums
++     */
++    UPDATE_PACKET(pkt, ptag);
++
++    return pbuf_ptag(pbuf);
++}
++
++/*
++ * Compatible version of the builder, easy to use especially for
++ * simple developments. 
++
++ * [WARNING]
++ * This function generates an error if several packets are bound to
++ * the context.
++ * 
++ */
++libnet_ptag_t
++libnet_build_802_3(u_int8_t *dst, u_int8_t *src, u_int16_t len, 
++u_int8_t *payload, u_int32_t payload_s, libnet_t *l, libnet_ptag_t ptag)
++
++{
++    packet_t *pkt;
++
++    PREPARE_PACKET(l, pkt);
++    return libnet_build_pbuf_802_3(dst, src, len, payload, payload_s, l,
++            pkt, ptag);
++}
++
++/* EOF */
+diff -rNu NG-libnet-orig/src/libnet_build_stp.c NG-libnet/src/libnet_build_stp.c
+--- NG-libnet-orig/src/libnet_build_stp.c	1970-01-01 01:00:00.000000000 +0100
++++ NG-libnet/src/libnet_build_stp.c	2004-08-17 15:27:45.000000000 +0200
+@@ -0,0 +1,201 @@
++/*
++ *  $Id: libnet_build_stp.c,v 1.9 2004/04/13 17:32:28 mike Exp $
++ *
++ *  libnet
++ *  libnet_build_stp.c - STP packet assembler
++ *
++ *  Copyright (c) 1998 - 2004 Mike D. Schiffman <mike@infonexus.com>
++ *  All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ *
++ */
++
++#if (HAVE_CONFIG_H)
++#include "../include/config.h"
++#endif
++#if (!(_WIN32) || (__CYGWIN__)) 
++#include "../include/libnet.h"
++#else
++#include "../include/win32/libnet.h"
++#endif
++
++libnet_ptag_t
++libnet_build_pbuf_stp_conf(u_int16_t id, u_int8_t version, u_int8_t bpdu_type,
++u_int8_t flags, u_int8_t *root_id, u_int32_t root_pc, u_int8_t *bridge_id,
++u_int16_t port_id, u_int16_t message_age, u_int16_t max_age,
++u_int16_t hello_time, u_int16_t f_delay, u_int8_t *payload,
++u_int32_t payload_s, libnet_t *l, packet_t *pkt, libnet_ptag_t ptag)
++{
++    pbuf_t *pbuf;
++    u_int32_t offset, value_l;
++    u_int16_t value_s;
++
++    CHECK_CTX_AND_PKT(l, pkt);
++    CHECK_PKT_IN_CTX(l, pkt);
++    CHECK_NOT_RAW_MODE(l);
++ 
++    /*
++     *  Find the existing protocol block if a ptag is specified, or create
++     *  a new one.
++     */
++    FIND_PBUF(pbuf, l, pkt, LIBNET_PBUF_STP_CONF_H, LIBNET_STP_CONF_H + payload_s, ptag);
++
++    /*
++     * Do the real job now
++     */
++
++    /* until we get some data marshalling in place we can't use this */
++    /*
++    stp_hdr.stp_id      = htons(id);
++    stp_hdr.stp_version = version;
++    stp_hdr.stp_bpdu_type = bpdu_type;
++    stp_hdr.stp_flags   = flags;
++    memcpy(&stp_hdr.stp_rootid, root_id, 8);
++    stp_hdr.stp_rootpc = htonl(root_pc);
++    memcpy(&stp_hdr.stp_bridgeid, bridge_id, 8);
++    stp_hdr.stp_portid  = htons(port_id);
++    stp_hdr.stp_mage    = htons(message_age);
++    stp_hdr.stp_maxage  = htons(max_age);
++    stp_hdr.stp_hellot  = htons(hello_time);
++    stp_hdr.stp_fdelay  = htons(f_delay);
++    */
++
++    offset = 0;
++    value_s = htons(id);
++    memcpy(pbuf_head(pbuf), &value_s, 2);
++    pbuf_head(pbuf)[2] = version;
++    pbuf_head(pbuf)[3] = bpdu_type;
++    pbuf_head(pbuf)[4] = flags;
++    offset += 5;
++    memcpy(pbuf_head(pbuf) + offset, root_id, 8);
++    offset += 8;
++    value_l = htonl(root_pc);
++    memcpy(pbuf_head(pbuf) + offset, &value_l, 4);
++    offset += 4;
++    memcpy(pbuf_head(pbuf) + offset, bridge_id, 8);
++    offset += 8;
++    value_s = htons(port_id);
++    memcpy(pbuf_head(pbuf) + offset, &value_s, 2);
++    offset += 2;
++    value_s = htons(message_age);
++    memcpy(pbuf_head(pbuf) + offset, &value_s, 2);
++    offset += 2;
++    value_s = htons(max_age);
++    memcpy(pbuf_head(pbuf) + offset, &value_s, 2);
++    offset += 2;
++    value_s = htons(hello_time);
++    memcpy(pbuf_head(pbuf) + offset, &value_s, 2);
++    offset += 2;
++    value_s = htons(f_delay);
++    memcpy(pbuf_head(pbuf) + offset, &value_s, 2);
++
++   /*
++    * Inject the payload
++    */
++    APPEND_PAYLOAD(pbuf_head(pbuf) + LIBNET_STP_CONF_H, payload, payload_s);
++
++    /*
++     * If we rebuild the pbuf, we may need to recompute checksums
++     */
++    UPDATE_PACKET(pkt, ptag);
++
++    return pbuf_ptag(pbuf);
++}
++
++
++libnet_ptag_t
++libnet_build_pbuf_stp_tcn(u_int16_t id, u_int8_t version, u_int8_t bpdu_type,
++u_int8_t *payload, u_int32_t payload_s, libnet_t *l, packet_t *pkt, libnet_ptag_t ptag)
++{
++    pbuf_t *pbuf;
++    struct libnet_stp_tcn_hdr *stp_hdr;
++
++    CHECK_CTX_AND_PKT(l, pkt);
++    CHECK_PKT_IN_CTX(l, pkt);
++    CHECK_NOT_RAW_MODE(l);
++ 
++    /*
++     *  Find the existing protocol block if a ptag is specified, or create
++     *  a new one.
++     */
++    FIND_PBUF(pbuf, l, pkt, LIBNET_PBUF_STP_TCN_H, LIBNET_STP_TCN_H + payload_s, ptag);
++
++    /*
++     * Do the real job now
++     */
++
++    stp_hdr = (struct libnet_stp_tcn_hdr *) pbuf_head(pbuf);
++    stp_hdr->stp_id        = htons(id);
++    stp_hdr->stp_version   = version;
++    stp_hdr->stp_bpdu_type = bpdu_type;
++
++   /*
++    * Inject the payload
++    */
++    APPEND_PAYLOAD(pbuf_head(pbuf) + LIBNET_STP_TCN_H, payload, payload_s);
++
++    /*
++     * If we rebuild the pbuf, we may need to recompute checksums
++     */
++    UPDATE_PACKET(pkt, ptag);
++
++    return pbuf_ptag(pbuf);
++}
++
++/*
++ * Compatible version of the builder, easy to use especially for
++ * simple developments. 
++
++ * [WARNING]
++ * This function generates an error if several packets are bound to
++ * the context.
++ * 
++ */
++libnet_ptag_t
++libnet_build_stp_conf(u_int16_t id, u_int8_t version, u_int8_t bpdu_type,
++u_int8_t flags, u_int8_t *root_id, u_int32_t root_pc, u_int8_t *bridge_id,
++u_int16_t port_id, u_int16_t message_age, u_int16_t max_age,
++u_int16_t hello_time, u_int16_t f_delay, u_int8_t *payload,
++u_int32_t payload_s, libnet_t *l, libnet_ptag_t ptag)
++{
++    packet_t *pkt;
++
++    PREPARE_PACKET(l, pkt);
++    return libnet_build_pbuf_stp_conf(id, version, bpdu_type, flags, root_id,
++            root_pc, bridge_id, port_id, message_age, max_age, hello_time,
++            f_delay, payload, payload_s, l, pkt, ptag);
++}
++
++
++libnet_ptag_t
++libnet_build_stp_tcn(u_int16_t id, u_int8_t version, u_int8_t bpdu_type,
++u_int8_t *payload, u_int32_t payload_s, libnet_t *l, libnet_ptag_t ptag)
++{
++    packet_t *pkt;
++
++    PREPARE_PACKET(l, pkt);
++    return libnet_build_pbuf_stp_tcn(id, version, bpdu_type, payload, 
++            payload_s, l, pkt, ptag);
++}
++
++/* EOF */
+diff -rNu NG-libnet-orig/src/Makefile.am NG-libnet/src/Makefile.am
+--- NG-libnet-orig/src/Makefile.am	2004-08-16 15:50:16.000000000 +0200
++++ NG-libnet/src/Makefile.am	2004-08-17 13:16:48.000000000 +0200
+@@ -31,7 +31,10 @@
+ 	libnet_build_tcp.c \
+ 	libnet_build_gre.c \
+ 	libnet_build_payload.c \
+-	libnet_build_ethernet.c
++	libnet_build_ethernet.c \
++	libnet_build_stp.c \
++	libnet_build_802.2.c \
++	libnet_build_802.3.c
+ 
+ 
+ EXTRA_libnet_a_SOURCES = libnet_link_bpf.c \
